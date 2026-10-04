@@ -1,0 +1,29 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>で、何語？ — NANI-GO</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#f4f8fc;color:#14213d;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}.app{max-width:600px;margin:auto;padding:18px}.card{background:#fff;border-radius:24px;padding:22px;margin:12px 0;box-shadow:0 10px 30px #12335b12}.hide{display:none}h1{text-align:center;color:#0e2b55;font-size:38px;margin:4px}.logo{text-align:center;font-size:64px}.sub{text-align:center;font-weight:900;letter-spacing:4px;color:#0e2b55}.muted{color:#68778c}textarea{width:100%;min-height:145px;border:1px solid #dbe6f2;border-radius:16px;padding:15px;font:inherit;font-size:18px}.btn{width:100%;border:0;border-radius:16px;padding:16px;margin-top:11px;font:inherit;font-size:17px;font-weight:800;background:#1477ff;color:white}.light{background:#eef6ff;color:#0d56b4;text-align:left}.langs{display:grid;grid-template-columns:1fr 1fr;gap:9px}.lang{border:1px solid #dbe6f2;background:#fff;border-radius:15px;padding:15px 6px;font-weight:800;font-size:16px}.msg{font-size:24px;line-height:1.55;padding:18px;border:1px solid #dbe6f2;border-radius:17px;background:#f8fbff}.pill{display:inline-block;padding:6px 10px;background:#eaf3ff;color:#075dcc;border-radius:999px;font-weight:800}.reply{font-size:25px;font-weight:700;line-height:1.5}.small{font-size:13px;color:#68778c}</style></head>
+<body><main class="app">
+<section id="home"><div class="card"><div class="logo">🌍💬</div><h1>で、何語？</h1><div class="sub">NANI-GO</div><p style="text-align:center">言葉がわからなくても、<br>伝えたいことから始めよう。</p><button class="btn" onclick="go('compose')">はじめる</button></div></section>
+<section id="compose" class="hide"><div class="card"><h2>① 伝えたいことを入力</h2><textarea id="src">この電車は大阪駅には行きません。次の駅で乗り換えてください。</textarea><button class="btn" onclick="go('langs')">相手に見せる</button></div></section>
+<section id="langs" class="hide"><div class="card"><h2>Please choose your language.</h2><p class="muted">読める言語を選んでください 🌏</p><div class="langs" id="langGrid"></div></div></section>
+<section id="partner" class="hide"><div class="card"><span class="pill" id="badge"></span><p class="muted" id="label"></p><div class="msg" id="msg"></div><button class="btn light" onclick="quick('fine')" id="fine"></button><button class="btn light" onclick="quick('thanks')" id="thanks"></button><button class="btn light" onclick="voice()" id="voice"></button><button class="btn light" onclick="typing()" id="typing"></button></div></section>
+<section id="type" class="hide"><div class="card"><h2 id="typeTitle"></h2><p class="muted" id="typeHelp"></p><textarea id="replyInput"></textarea><button class="btn" onclick="typed()" id="send"></button></div></section>
+<section id="owner" class="hide"><div class="card"><span class="pill">相手 → 日本語</span><h2>相手からの返事</h2><div class="reply" id="ownerReply"></div><button class="btn" onclick="go('compose')">もう一度伝える</button><button class="btn light" onclick="go('home')">会話を終わる</button><p class="small">試作版：自由入力のAI翻訳・音声認識は次段階で接続します。</p></div></section>
+<script>
+let L='English'; const screens=['home','compose','langs','partner','type','owner'];
+const D={
+'English':['This train does not go to Osaka Station. Please change trains at the next station.','Message for you',"I'm okay, thank you.",'OK, thank you!','🎙 Reply by speaking','⌨️ Reply by typing','Type your reply','Please type in your language.','Send reply'],
+'中文':['这趟电车不去大阪站。请在下一站换乘。','给您的信息','没关系，我没遇到困难。','好的，谢谢！','🎙 说话回复','⌨️ 输入文字回复','输入回复','请用您的语言输入。','发送回复'],
+'한국어':['이 전철은 오사카역에 가지 않습니다. 다음 역에서 갈아타 주세요.','메시지','괜찮아요. 문제없어요.','네, 감사합니다!','🎙 말로 답하기','⌨️ 글자로 답하기','답장을 입력하세요','사용하는 언어로 입력해 주세요.','답장 보내기'],
+'Español':['Este tren no va a la estación de Osaka. Cambie de tren en la próxima estación.','Mensaje para usted','Estoy bien, gracias.','OK, ¡gracias!','🎙 Responder hablando','⌨️ Responder escribiendo','Escriba su respuesta','Escriba en su idioma.','Enviar respuesta'],
+'Français':["Ce train ne va pas à la gare d’Osaka. Veuillez changer à la prochaine station.",'Message pour vous','Ça va, merci.','OK, merci !','🎙 Répondre en parlant','⌨️ Répondre par écrit','Écrivez votre réponse','Écrivez dans votre langue.','Envoyer'],
+'Tiếng Việt':['Tàu này không đi đến ga Osaka. Vui lòng đổi tàu ở ga tiếp theo.','Tin nhắn cho bạn','Tôi ổn, cảm ơn.','OK, cảm ơn!','🎙 Trả lời bằng giọng nói','⌨️ Nhập câu trả lời','Nhập câu trả lời','Hãy nhập bằng ngôn ngữ của bạn.','Gửi'],
+'ภาษาไทย':['รถไฟขบวนนี้ไม่ไปสถานีโอซาก้า กรุณาเปลี่ยนขบวนที่สถานีถัดไป','ข้อความถึงคุณ','ไม่เป็นไร ขอบคุณ','โอเค ขอบคุณ!','🎙 ตอบด้วยเสียง','⌨️ พิมพ์ตอบ','พิมพ์คำตอบ','กรุณาพิมพ์ด้วยภาษาของคุณ','ส่งคำตอบ'],
+'العربية':['هذا القطار لا يذهب إلى محطة أوساكا. يُرجى تبديل القطار في المحطة التالية.','رسالة لك','أنا بخير، شكرًا.','حسنًا، شكرًا!','🎙 الرد بالصوت','⌨️ الرد بالكتابة','اكتب ردك','اكتب بلغتك.','إرسال الرد']
+};
+function go(x){screens.forEach(s=>document.getElementById(s).classList.toggle('hide',s!==x));scrollTo(0,0)}
+let grid=document.getElementById('langGrid');Object.keys(D).forEach(x=>{let b=document.createElement('button');b.className='lang';b.textContent=x;b.onclick=()=>choose(x);grid.appendChild(b)});
+function choose(x){L=x;let d=D[x];badge.textContent=x;label.textContent=d[1];msg.textContent=d[0];fine.textContent='🙆 '+d[2];thanks.textContent='👍 '+d[3];voice.textContent=d[4];typing.textContent=d[5];go('partner')}
+function quick(x){ownerReply.textContent=x==='fine'?'大丈夫です。困っていません。':'OK、ありがとう。';go('owner')}
+function voice(){ownerReply.textContent='【試作】ここで相手が選んだ言語を音声認識し、日本語へ翻訳します。';go('owner')}
+function typing(){let d=D[L];typeTitle.textContent=d[6];typeHelp.textContent=d[7];send.textContent=d[8];replyInput.value='';go('type')}
+function typed(){let v=replyInput.value.trim();ownerReply.textContent=v?'【試作】「'+v+'」→ 実運用版ではここに日本語訳を表示します。':'入力がありません。';go('owner')}
+</script></main></body></html>
