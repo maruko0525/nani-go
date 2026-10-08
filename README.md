@@ -1,2 +1,2 @@
-# NANI-GO v3
-20言語、国旗＋日本語名、終了/会話開始の明確な2択を実装した試作版。
+# NANI-GO v4
+実翻訳版。worker.jsをCloudflare Workerへ、AI binding名は AI。Deploy後Worker URLをindex.htmlのWORKER_URLへ設定。
